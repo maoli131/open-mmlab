@@ -84,3 +84,49 @@ Install MMClassification as following:
 ```
 (open-mmlab)$ mim install mmcls
 ```
+
+Two example scripts for MMClassification are included in the repo:
+- Python API: [mcls-api.ipynb](mcls-api.ipynb)
+- Command line: [mcls-shell.ipynb](mcls-shell.ipynb)
+
+## Weights and Bias
+
+The platform for experiment tracking, dataset version, model management and project collaboration. 
+
+<div><img /></div>
+<img src="https://wandb.me/mini-diagram" width="650" alt="Weights & Biases" />
+<div><img /></div>
+
+Register an account to use the MLOps platform at the [official website](https://wandb.ai/site). In our conda environment, 
+```
+(open-mmlab)$ pip install wandb --upgrade
+```
+
+Add `wandb` monitoring to our code:
+```python
+# import the library
+import wandb
+
+# start a new experiment
+wandb.init(project="new-sota-model")
+
+# capture a dictionary of hyperparameters with config
+wandb.config = {"learning_rate": 0.001, "epochs": 100, "batch_size": 128}
+
+# set up model and data
+model, dataloader = get_model(), get_data()
+
+# optional: track gradients
+wandb.watch(model)
+
+for batch in dataloader:
+  metrics = model.training_step()
+  # log metrics inside your training loop to visualize model performance
+  wandb.log(metrics)
+
+# optional: save model at the end
+model.to_onnx()
+wandb.save("model.onnx")
+```
+
+For more details, follow this [MLP-FashionMNIST.ipynb](MLP-FashionMNIST.ipynb)
